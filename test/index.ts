@@ -1,4 +1,4 @@
-import * as pdf from '../lib';
+import { createPhantomJsRenderer } from '../lib';
 import * as test from 'tape';
 import { HtmlToPdfOptions } from '../lib/html-to-pdf-options.interface';
 import { createWriteStream, existsSync, readFileSync, ReadStream, unlink } from 'fs';
@@ -18,41 +18,41 @@ test.createStream().pipe(tapSpec()).pipe(process.stdout);
 //
 // API
 //
-test('pdf.create(html[, options]) throws an error when executing without html', function (t) {
+test('createPhantomJsRenderer(html[, options]) throws an error when executing without html', function (t) {
   t.plan(3);
 
   t.throws(function () {
-    pdf.create(null);
-  }, 'pdf.create(null)');
+    createPhantomJsRenderer(null);
+  }, 'createPhantomJsRenderer(null)');
   t.throws(function () {
-    pdf.create(undefined);
-  }, 'pdf.create(undefined)');
+    createPhantomJsRenderer(undefined);
+  }, 'createPhantomJsRenderer(undefined)');
   t.throws(function () {
-    pdf.create('');
-  }, 'pdf.create("")');
+    createPhantomJsRenderer('');
+  }, 'createPhantomJsRenderer("")');
 });
 
 // tslint:disable-next-line:max-line-length
-test('pdf.create(html[, options], callback) returns error as first cb argument when executing without html', function (t) {
+test('createPhantomJsRenderer(html[, options], callback) returns error as first cb argument when executing without html', function (t) {
   t.plan(3);
 
-  pdf.create(null, function (error) {
-    t.assert(error instanceof Error, 'pdf.create(null, cb)');
+  createPhantomJsRenderer(null, function (error) {
+    t.assert(error instanceof Error, 'createPhantomJsRenderer(null, cb)');
   });
 
-  pdf.create(undefined, function (error) {
-    t.assert(error instanceof Error, 'pdf.create(undefined, cb)');
+  createPhantomJsRenderer(undefined, function (error) {
+    t.assert(error instanceof Error, 'createPhantomJsRenderer(undefined, cb)');
   });
 
-  pdf.create('', function (error) {
-    t.assert(error instanceof Error, 'pdf.create("", cb)');
+  createPhantomJsRenderer('', function (error) {
+    t.assert(error instanceof Error, 'createPhantomJsRenderer("", cb)');
   });
 });
 
-test('pdf.create(html[, options]).toFile([filename, ]callback)', function (t) {
+test('createPhantomJsRenderer(html[, options]).toFile([filename, ]callback)', function (t) {
   t.plan(5);
 
-  pdf.create(html).toFile(function (err, _pdf: any) {
+  createPhantomJsRenderer(html).toFile(function (err, _pdf: any) {
     t.error(err);
     t.assert(
       typeof _pdf.filename === 'string',
@@ -62,7 +62,7 @@ test('pdf.create(html[, options]).toFile([filename, ]callback)', function (t) {
   });
 
   const file = join(testFolder, 'simple.pdf');
-  pdf.create(html).toFile(file, function (err, _pdf: any) {
+  createPhantomJsRenderer(html).toFile(file, function (err, _pdf: any) {
     t.error(err);
     t.assert(
       _pdf.filename === file,
@@ -72,29 +72,29 @@ test('pdf.create(html[, options]).toFile([filename, ]callback)', function (t) {
   });
 });
 
-test('pdf.create(html).toBuffer(callback)', function (t) {
+test('createPhantomJsRenderer(html).toBuffer(callback)', function (t) {
   t.plan(3);
 
-  pdf.create(html).toBuffer(function (err, _pdf: any) {
+  createPhantomJsRenderer(html).toBuffer(function (err, _pdf: any) {
     t.error(err);
     t.assert(Buffer.isBuffer(_pdf), 'toBuffer(callback) returns a buffer instance as second cb argument');
     t.assert(/^\%PDF-1.4/.test(_pdf.slice(0, 100).toString()), 'the PDF buffer has a PDF Header');
   });
 });
 
-test('pdf.create(html, {directory: "/tmp"}).toBuffer(callback)', function (t) {
+test('createPhantomJsRenderer(html, {directory: "/tmp"}).toBuffer(callback)', function (t) {
   t.plan(2);
 
-  pdf.create(html, { directory: '/tmp' }).toBuffer(function (err, _pdf: any) {
+  createPhantomJsRenderer(html, { directory: '/tmp' }).toBuffer(function (err, _pdf: any) {
     t.error(err);
     t.assert(Buffer.isBuffer(_pdf), 'uses the passed directory as tmp dir');
   });
 });
 
-test('pdf.create(html, {renderDelay: 1000}).toBuffer(callback)', function (t) {
+test('createPhantomJsRenderer(html, {renderDelay: 1000}).toBuffer(callback)', function (t) {
   t.plan(2);
 
-  pdf.create(html, { renderDelay: 1000 }).toBuffer(function (err, _pdf: any) {
+  createPhantomJsRenderer(html, { renderDelay: 1000 }).toBuffer(function (err, _pdf: any) {
     t.error(err);
     t.assert(Buffer.isBuffer(_pdf), 'still returns after renderDelay');
   });
@@ -107,7 +107,7 @@ test('window.callPhantom renders page', function (t) {
   const file = join(testFolder, 'callback.pdf');
   const startTime = new Date().getTime();
 
-  pdf.create(callbackHtml, { renderDelay: 'manual' }).toFile(file, function (err, _pdf: any) {
+  createPhantomJsRenderer(callbackHtml, { renderDelay: 'manual' }).toFile(file, function (err, _pdf: any) {
     const endTime = new Date().getTime();
     t.error(err);
 
@@ -117,10 +117,10 @@ test('window.callPhantom renders page', function (t) {
   });
 });
 
-test('pdf.create(html[, options]).toStream(callback)', function (t) {
+test('createPhantomJsRenderer(html[, options]).toStream(callback)', function (t) {
   t.plan(3);
 
-  pdf.create(html).toStream(function (err, stream) {
+  createPhantomJsRenderer(html).toStream(function (err, stream) {
     t.error(err);
     t.assert(stream instanceof ReadStream, 'toStream(callback) returns a fs.ReadStream as second cb argument');
     const destination = join(testFolder, 'streamed.pdf');
@@ -141,7 +141,7 @@ test('allows invalid phantomPath', function (t) {
     phantomPath: '/bad/path/to/phantom',
   };
 
-  pdf.create(html, options).toFile(filename, function (error, _pdf) {
+  createPhantomJsRenderer(html, options).toFile(filename, function (error, _pdf) {
     t.assert(error instanceof Error, 'Returns an error');
     t.equal(error.code, 'ENOENT', 'Error code is ENOENT');
     t.error(_pdf, 'PDF does not exist');
@@ -160,7 +160,7 @@ test('allows custom page and footer options', function (t) {
     },
   };
 
-  pdf.create(html, options).toFile(filename, function (error, _pdf) {
+  createPhantomJsRenderer(html, options).toFile(filename, function (error, _pdf) {
     t.error(error);
     t.assert(_pdf.filename === filename, 'Returns the filename from the phantom script');
     t.assert(existsSync(_pdf.filename), 'Saves the pdf with a custom page size and footer');
@@ -172,7 +172,7 @@ test('allows different header and footer for first page', function (t) {
 
   const enrichedHtml = readFileSync(join(testFolder, 'multiple-pages.html'), 'utf8');
   const filename = join(testFolder, 'multiple-pages.pdf');
-  pdf.create(enrichedHtml, { quality: 100 }).toFile(filename, function (error, _pdf) {
+  createPhantomJsRenderer(enrichedHtml, { quality: 100 }).toFile(filename, function (error, _pdf) {
     t.error(error);
     t.assert(_pdf.filename === filename, 'Returns the filename from the phantom script');
     t.assert(existsSync(_pdf.filename), 'Saves the pdf with a custom page size and footer');
@@ -184,7 +184,7 @@ test('load external css', function (t) {
 
   const enrichedHtml = readFileSync(join(testFolder, 'external-css.html'), 'utf8');
   const filename = join(testFolder, 'external-css.pdf');
-  pdf.create(enrichedHtml).toFile(filename, function (error, _pdf) {
+  createPhantomJsRenderer(enrichedHtml).toFile(filename, function (error, _pdf) {
     t.error(error);
     t.assert(_pdf.filename === filename, 'Returns the filename from the phantom script');
     t.assert(existsSync(_pdf.filename), 'Saves the pdf with a custom page size and footer');
@@ -196,7 +196,10 @@ test('load external js', function (t) {
 
   const enrichedHtml = readFileSync(join(testFolder, 'external-js.html'), 'utf8');
   const filename = join(testFolder, 'external-js.pdf');
-  pdf.create(enrichedHtml, { phantomArgs: ['--ignore-ssl-errors=true'] }).toFile(filename, function (error, _pdf) {
+  createPhantomJsRenderer(enrichedHtml, { phantomArgs: ['--ignore-ssl-errors=true'] }).toFile(filename, function (
+    error,
+    _pdf
+  ) {
     t.error(error);
     t.assert(_pdf.filename === filename, 'Returns the filename from the phantom script');
     t.assert(existsSync(_pdf.filename), 'Saves the pdf with a custom page size and footer');
@@ -216,28 +219,27 @@ test('load with cookies js', function (t) {
 
     const port = server.address().port;
     const filename = join(testFolder, 'cookies.pdf');
-    pdf
-      .create(
-        `
+
+    createPhantomJsRenderer(
+      `
       <body>here is an iframe which receives the cookies
         <iframe src="http://localhost:${port}" width="400" height="100"></iframe>
       </body>
     `,
-        {
-          httpCookies: [
-            {
-              name: 'Valid-Cookie-Name',
-              value: 'Valid-Cookie-Value',
-              domain: 'localhost',
-              path: '/',
-            },
-          ],
-        }
-      )
-      .toFile(filename, function (error, _pdf) {
-        server.close();
-        t.error(error, 'There must be no render error');
-        t.assert(existsSync(_pdf.filename), 'Saves the pdf');
-      });
+      {
+        httpCookies: [
+          {
+            name: 'Valid-Cookie-Name',
+            value: 'Valid-Cookie-Value',
+            domain: 'localhost',
+            path: '/',
+          },
+        ],
+      }
+    ).toFile(filename, function (error, _pdf) {
+      server.close();
+      t.error(error, 'There must be no render error');
+      t.assert(existsSync(_pdf.filename), 'Saves the pdf');
+    });
   });
 });

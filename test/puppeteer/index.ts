@@ -68,7 +68,9 @@ asyncTest(`can render ${testFolder}/multiple-pages.html to file`, async t => {
   }
 
   const exampleHtml = await readFile(`${testFolder}/multiple-pages.html`, { encoding: 'utf-8' });
-  const renderer = createPuppeteerRenderer({});
+  const renderer = createPuppeteerRenderer({
+    pdf: {},
+  });
 
   await renderer.renderFromHtmlToFile(exampleHtml, resolve(testFolder, 'multiple-pages.pdf'));
 

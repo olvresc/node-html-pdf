@@ -15,11 +15,6 @@ export class PuppeteerRenderer {
 
     await page.setContent(html, this.options?.navigation ?? {});
 
-    /*
-    await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
-      waitUntil: 'networkidle0',
-    });
-    */
     const pdfOptions: PDFOptions = this.options?.pdf ?? {};
     const buffer = await page.pdf({
       ...this.defaultOptions,
@@ -40,12 +35,6 @@ export class PuppeteerRenderer {
     const { browser, page } = await this.getBrowserAndPage();
 
     await page.setContent(html, this.options?.navigation ?? {});
-
-    /*
-    await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
-      waitUntil: 'networkidle0',
-    });
-    */
 
     const pdfOptions: PDFOptions = this.options?.pdf ?? {};
     await page.pdf({

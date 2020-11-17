@@ -11,20 +11,6 @@ try {
   console.log('html-pdf: Failed to load PhantomJS module.', err);
 }
 
-/*
- * phantomjs version 1.8.1 and later should work.
- *
- * Create a PDF file out of an html string.
- *
- * Regions for the PDF page are:
- *
- * - Page Header  -> document.getElementById('pageHeader')
- * - Page Content -> document.getElementById('pageContent')
- * - Page Footer  -> document.getElementById('pageFooter')
- *
- * When no #pageContent is available, phantomjs will use document.body as pdf content
- */
-
 export function PDF(html: string, options?: HtmlToPdfOptions) {
   this.html = html;
   this.options = options || {};

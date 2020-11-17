@@ -3,7 +3,37 @@ import { PDF } from './pdf';
 import { PuppeteerOptions } from './puppeteer-options.interface';
 import { PuppeteerRenderer } from './puppeteer-renderer';
 
+/*
+ * Create a PDF file out of an html string.
+ *
+ * Regions for the PDF page are:
+ *
+ * - Page Header  -> document.getElementById('pageHeader')
+ * - Page Content -> document.getElementById('pageContent')
+ * - Page Footer  -> document.getElementById('pageFooter')
+ *
+ * When no #pageContent is available, phantomjs will use document.body as pdf content
+ */
 export function create(
+  html: string,
+  options?: HtmlToPdfOptions | ((err: any, result?: any) => void),
+  callback?: (err: any, result?: any) => void
+) {
+  return createPhantomJsRenderer(html, options, callback);
+}
+
+/*
+ * Create a PDF file out of an html string.
+ *
+ * Regions for the PDF page are:
+ *
+ * - Page Header  -> document.getElementById('pageHeader')
+ * - Page Content -> document.getElementById('pageContent')
+ * - Page Footer  -> document.getElementById('pageFooter')
+ *
+ * When no #pageContent is available, phantomjs will use document.body as pdf content
+ */
+export function createPhantomJsRenderer(
   html: string,
   options?: HtmlToPdfOptions | ((err: any, result?: any) => void),
   callback?: (err: any, result?: any) => void
