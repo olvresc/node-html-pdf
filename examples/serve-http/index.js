@@ -1,6 +1,6 @@
 const fs = require('fs')
 const http = require('http')
-const pdf = require('../../dist')
+const pdf = require('../../dist/lib')
 const tmpl = fs.readFileSync(require.resolve('../businesscard/businesscard.html'), 'utf8')
 
 const server = http.createServer(function (req, res) {
