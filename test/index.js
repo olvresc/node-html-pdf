@@ -8,7 +8,7 @@ test.createStream()
 
 var fs = require('fs')
 var path = require('path')
-var pdf = require('../')
+var pdf = require('../dist')
 var html = fs.readFileSync(path.join(__dirname, 'example.html'), 'utf8')
 
 //

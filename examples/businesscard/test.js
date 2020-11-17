@@ -1,5 +1,5 @@
 var test = require('tape')
-var pdf = require('../../')
+const pdf = require('../../dist')
 var path = require('path')
 var fs = require('fs')
 

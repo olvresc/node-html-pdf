@@ -2,32 +2,38 @@
   "name": "html-pdf",
   "version": "2.2.0",
   "description": "HTML to PDF converter that uses phantomjs",
-  "engines": {
-    "node": ">=4.0.0"
-  },
   "main": "lib/index.js",
-  "directories": {
-    "test": "test"
-  },
+  "files": [
+    "bin",
+    "dist",
+    "package.json"
+  ],
   "bin": {
     "html-pdf": "bin/index.js"
   },
   "scripts": {
-    "test": "standard && tape test/index.js examples/*/test.js"
+    "test": "npm run build && tape test/index.js examples/*/test.js",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "tsc": "tsc --build tsconfig.json",
+    "build": "npm run lint && npm run tsc"
   },
   "author": "Marc Bachmann",
   "license": "MIT",
   "devDependencies": {
-    "standard": "^5.1.1",
+    "@types/node": "^14.14.7",
+    "@types/puppeteer": "^5.4.0",
     "tap-spec": "^2.2.0",
-    "tape": "^3.4.0"
+    "tape": "^3.4.0",
+    "tslint": "^5.15.0",
+    "typescript": "^4.0.5"
   },
   "optionalDependencies": {
-    "phantomjs-prebuilt": "^2.1.4"
+    "phantomjs-prebuilt": "^2.1.16",
+    "puppeteer": "^5.4.0"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/marcbachmann/node-html-pdf.git"
+    "url": "git://github.com/LarsVonQualen/node-html-pdf.git"
   },
   "keywords": [
     "html",
@@ -37,7 +43,7 @@
     "nodejs"
   ],
   "bugs": {
-    "url": "https://github.com/marcbachmann/node-html-pdf/issues"
+    "url": "https://github.com/LarsVonQualen/node-html-pdf/issues"
   },
-  "homepage": "https://github.com/marcbachmann/node-html-pdf"
+  "homepage": "https://github.com/LarsVonQualen/node-html-pdf/"
 }
