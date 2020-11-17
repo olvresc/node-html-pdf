@@ -1,26 +1,40 @@
-const internalPDF = require('./pdf');
+import { HtmlToPdfOptions } from './html-to-pdf-options.interface';
+import { PDF } from './pdf';
+import { PuppeteerOptions } from './puppeteer-options.interface';
+import { PuppeteerRenderer } from './puppeteer-renderer';
 
-module.exports = {
-  create: function createPdf(html, options, callback) {
-    if (arguments.length === 1) {
-      return new internalPDF(html);
-    }
+export function create(
+  html: string,
+  options?: HtmlToPdfOptions | ((err: any, result?: any) => void),
+  callback?: (err: any, result?: any) => void
+) {
+  if (!options && !callback) {
+    return new PDF(html);
+  }
 
-    if (arguments.length === 2 && typeof options !== 'function') {
-      return new internalPDF(html, options);
-    }
+  if (options && typeof options !== 'function') {
+    return new PDF(html, options);
+  }
 
-    if (arguments.length === 2) {
-      callback = options;
-      options = {};
-    }
-
+  if (options && typeof options === 'function') {
     try {
-      var pdf = new internalPDF(html, options);
+      const pdf = new PDF(html, {});
+      pdf.exec(options);
     } catch (err) {
-      return callback(err);
+      return options(err);
     }
+  }
 
+  try {
+    const pdf = new PDF(html, options as HtmlToPdfOptions);
     pdf.exec(callback);
-  },
-};
+  } catch (err) {
+    return callback(err);
+  }
+}
+
+export function createPuppeteerRenderer(options?: PuppeteerOptions) {
+  const renderer = new PuppeteerRenderer(options);
+
+  return renderer;
+}

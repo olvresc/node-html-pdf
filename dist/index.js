@@ -1,23 +1,31 @@
-const internalPDF = require('./pdf');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = {
-    create: function createPdf(html, options, callback) {
-        if (arguments.length === 1) {
-            return new internalPDF(html);
+    create(html, options, callback) {
+        const { PDF } = require('./pdf');
+        if (!options && !callback) {
+            return new PDF(html);
         }
-        if (arguments.length === 2 && typeof options !== 'function') {
-            return new internalPDF(html, options);
+        if (options && typeof options !== 'function') {
+            return new PDF(html, options);
         }
-        if (arguments.length === 2) {
-            callback = options;
-            options = {};
+        if (options && typeof options === 'function') {
+            try {
+                const pdf = new PDF(html, {});
+                pdf.exec(options);
+            }
+            catch (err) {
+                return options(err);
+            }
         }
         try {
-            var pdf = new internalPDF(html, options);
+            const pdf = new PDF(html, options);
+            pdf.exec(callback);
         }
         catch (err) {
             return callback(err);
         }
-        pdf.exec(callback);
     },
+    createWithPuppeteer() { },
 };
 //# sourceMappingURL=index.js.map

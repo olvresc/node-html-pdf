@@ -1,3 +1,5 @@
+import { HtmlToPdfOptions } from './html-to-pdf-options.interface';
+
 var fs = require('fs');
 var childprocess = require('child_process');
 var path = require('path');
@@ -23,7 +25,7 @@ try {
  * When no #pageContent is available, phantomjs will use document.body as pdf content
  */
 
-function PDF(html, options) {
+export function PDF(html: string, options?: HtmlToPdfOptions) {
   this.html = html;
   this.options = options || {};
   if (this.options.script) {
@@ -42,8 +44,6 @@ function PDF(html, options) {
   assert(typeof this.html === 'string' && this.html.length, "html-pdf: Can't create a pdf without an html string");
   this.options.timeout = parseInt(this.options.timeout, 10) || 30000;
 }
-
-module.exports = PDF;
 
 PDF.prototype.toBuffer = function PdfToBuffer(callback) {
   this.exec(function execPdfToBuffer(err, res) {
